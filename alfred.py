@@ -20,7 +20,9 @@ _MAX_RESULTS_DEFAULT = 9
 preferences = plistlib.readPlist('info.plist')
 bundleid = preferences['bundleid']
 
+
 class Item(object):
+
     @classmethod
     def unicode(cls, value):
         try:
@@ -52,22 +54,28 @@ class Item(object):
             SubElement(item, attribute, self.unicode(attributes)).text = unicode(value)
         return item
 
+
 def args(characters=None):
     return tuple(unescape(decode(arg), characters) for arg in sys.argv[1:])
+
 
 def config():
     return _create('config')
 
+
 def decode(s):
     return unicodedata.normalize('NFD', s.decode('utf-8'))
 
+
 def uid(uid):
     return u'-'.join(map(unicode, (bundleid, uid)))
+
 
 def unescape(query, characters=None):
     for character in (UNESCAPE_CHARACTERS if (characters is None) else characters):
         query = query.replace('\\%s' % character, character)
     return query
+
 
 def work(volatile):
     path = {
@@ -76,14 +84,17 @@ def work(volatile):
     }[bool(volatile)]
     return _create(os.path.join(os.path.expanduser(path), bundleid))
 
+
 def write(text):
     sys.stdout.write(text)
+
 
 def xml(items, maxresults=_MAX_RESULTS_DEFAULT):
     root = Element('items')
     for item in itertools.islice(items, maxresults):
         root.append(item.xml())
     return tostring(root, encoding='utf-8')
+
 
 def _create(path):
     if not os.path.isdir(path):
